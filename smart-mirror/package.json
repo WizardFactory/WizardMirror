@@ -20,7 +20,9 @@
     "url": "https://github.com/atom/electron-quick-start/issues"
   },
   "homepage": "https://github.com/atom/electron-quick-start#readme",
-  "devDependencies": {
-    "electron-prebuilt": "^0.36.0"
+  "dependencies": {
+    "electron-prebuilt": "^0.36.0",
+    "express": "^4.14.0",
+    "nodemailer": "^2.5.0"
   }
 }

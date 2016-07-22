@@ -20,7 +20,7 @@
         var VIDEO_INDEX=0;
         $scope.listening = false;
         $scope.complement = command.hi;
-        $scope.debug = false;
+        $scope.debug = true;
         $scope.focus = "default";
         $scope.greetingHidden = "true";
         $scope.user = {};
@@ -29,7 +29,15 @@
         /** Smart Mirror IP */
         var os = require('os');
         var networkInterfaces = os.networkInterfaces();
-        $scope.ipAddress = networkInterfaces.wlan0[0].address;
+        if (networkInterfaces) {
+            if (networkInterfaces.wlan0) {
+                $scope.ipAddress = networkInterfaces.wlan0[0].address;
+            }
+            else if (networkInterfaces.en0) {
+                //0 ipv6, 1 ipv4
+                $scope.ipAddress = networkInterfaces.en0[1].address;
+            }
+        }
 
         /** Sound Cloud Service */
         /*
@@ -295,10 +303,10 @@
      	    	$scope.interimResult = android.command; // 미러의 음성인식된 문구에 보여짐
 	    		console.log("Android Command :: "+android.command);
 	    		var androidCommand = android.command+"";
-	    		
+
     			if(androidCommand === command.sleep) { functionService.goSleep($scope);}
     			else if(androidCommand === command.whois) { functionService.whoIsSmartMirror($scope); }
-    			else if(androidCommand === command.home) { functionService.defaultHome($scope); }  
+    			else if(androidCommand === command.home) { functionService.defaultHome($scope); }
     			else if(androidCommand === command.wake) { functionService.wake($scope); }
     			else if(androidCommand === command.whatcanisay) { functionService.whatCanISay($scope); }
     			else if(androidCommand === command.map) { functionService.map($scope,GeolocationService,MapService); }
@@ -307,7 +315,7 @@
     			else if(androidCommand === command.video) { functionService.video(); }
     			else if(androidCommand === command.lighton) { functionService.lightOn();}
     			else if(androidCommand === command.lightoff) { functionService.lightOff();}
-    			
+
     			/* Map Service ***의 위치 보여줘 */
     			var locationExist = androidCommand.indexOf("위치");
 	    		if(locationExist != -1) {
@@ -315,7 +323,7 @@
 	    			console.log(locationValue[0]);
 	    			functionService.location(locationValue[0],$scope,GeolocationService,MapService);
 	    		}
-	    		
+
 	    		/* Youtube *** 동영상 보여줘 */
 	    		var youtubeExist = androidCommand.indexOf("동영상");
 	    		if(youtubeExist != -1) {
@@ -327,24 +335,24 @@
 		    			functionService.playYoutube(youtubeValue[0],$scope,$sce,YoutubeService);
 	    			}
      	    	}
-	    		
+
 	    		/* 지하철 **역 *호선 *행성 */
 	    		var subwayExist = androidCommand.indexOf("역");
 	    		if(subwayExist != -1) {
 	    			// OO역 OO호선 상(하)행선
 	    			var temp1 = androidCommand.split("역");
 	    			var temp2 = temp1[1].split("호선");
-	    			
+
 	    			var subwayStation = temp1[0];
 	    			var subwayLineNumber = temp2[0].trim();
 	    			var subwayUpDown = temp2[1].trim();
 	    			console.log(subwayStation+"역"+subwayLineNumber+"호선"+subwayUpDown);
 	    			functionService.subway(subwayStation,subwayLineNumber,subwayUpDown,$scope,SubwayService);
 	    		}
-	    		
-	    		
+
+
     	    });
-	    
+
 
             var resetCommandTimeout;
             //Track when the Annyang is listening to us
